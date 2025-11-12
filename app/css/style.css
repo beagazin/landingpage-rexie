@@ -47,6 +47,20 @@
   --animate-shine: shine 5s ease-in-out 500ms infinite;
   --animate-gradient: gradient 6s linear infinite;
 
+  /* Nova cor primária */
+  --color-primary-50: #f7f3fe;
+  --color-primary-100: #efe7fd;
+  --color-primary-200: #e0d3fb;
+  --color-primary-300: #c9b1f8;
+  --color-primary-400: #b088f3;
+  --color-primary-500: #a175fc;
+  --color-primary-600: #8a4ef0;
+  --color-primary-700: #7639db;
+  --color-primary-800: #6330b8;
+  --color-primary-900: #522996;
+  --color-primary-950: #341666;
+}
+
   @keyframes shine {
     0% {
       top: 0;
@@ -72,7 +86,6 @@
       background-position: 200% center;
     }
   }
-}
 
 /*
   The default border color has changed to `currentColor` in Tailwind CSS v4,
