@@ -25,6 +25,10 @@ export default function SignIn() {
       try {
         const session = JSON.parse(decodeURIComponent(sessionParam));
         saveSession(session);
+        
+        // Dispatch custom event to notify other components
+        window.dispatchEvent(new Event('session-updated'));
+        
         const redirect = searchParams.get('redirect') || '/';
         router.push(redirect);
       } catch (err) {

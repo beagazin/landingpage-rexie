@@ -15,16 +15,30 @@ export default function Header() {
 
   useEffect(() => {
     // Check for session on mount
-    const currentSession = getSession();
-    setSession(currentSession);
+    const checkSession = () => {
+      const currentSession = getSession();
+      setSession(currentSession);
+    };
+    
+    checkSession();
 
     // Listen for storage changes (for multi-tab sync)
     const handleStorageChange = () => {
-      setSession(getSession());
+      checkSession();
+    };
+
+    // Listen for custom session update event
+    const handleSessionUpdate = () => {
+      checkSession();
     };
 
     window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
+    window.addEventListener('session-updated', handleSessionUpdate);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('session-updated', handleSessionUpdate);
+    };
   }, []);
 
   useEffect(() => {
