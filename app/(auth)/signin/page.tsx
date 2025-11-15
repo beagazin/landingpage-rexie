@@ -25,10 +25,6 @@ export default function SignIn() {
       try {
         const session = JSON.parse(decodeURIComponent(sessionParam));
         saveSession(session);
-        
-        // Dispatch custom event to notify other components
-        window.dispatchEvent(new Event('session-updated'));
-        
         const redirect = searchParams.get('redirect') || '/';
         router.push(redirect);
       } catch (err) {
@@ -53,9 +49,6 @@ export default function SignIn() {
   }, [searchParams, router]);
 
   const handleDiscordLogin = () => {
-    // Debug: mostrar URL no console
-    console.log('Discord OAuth URL:', DISCORD_OAUTH_URL);
-    console.log('Redirect URI:', process.env.NEXT_PUBLIC_DISCORD_REDIRECT_URI);
     window.location.href = DISCORD_OAUTH_URL;
   };
 
@@ -65,10 +58,10 @@ export default function SignIn() {
         <div className="py-12 md:py-20">
           {/* Section header */}
           <div className="pb-12 text-center">
-            <h1 className="animate-[gradient_6s_linear_infinite] bg-[linear-gradient(to_right,var(--color-gray-200),#b896fc,var(--color-gray-50),#9c6dfc,var(--color-gray-200))] bg-[length:200%_auto] bg-clip-text font-nacelle text-3xl font-semibold text-transparent md:text-4xl">
+            <h1 className="animate-[gradient_6s_linear_infinite] bg-[linear-gradient(to_right,var(--color-gray-200),var(--color-indigo-200),var(--color-gray-50),var(--color-indigo-300),var(--color-gray-200))] bg-[length:200%_auto] bg-clip-text font-nacelle text-3xl font-semibold text-transparent md:text-4xl">
               Bem-vindo de volta!
             </h1>
-            <p className="mt-4 text-lg text-gray-400">
+            <p className="mt-4 text-lg text-indigo-200/65">
               Conecte-se com sua conta Discord para continuar
             </p>
           </div>

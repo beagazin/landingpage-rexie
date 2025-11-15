@@ -1,3 +1,4 @@
+// lib/auth.ts
 export interface DiscordUser {
   id: string;
   username: string;
@@ -75,32 +76,48 @@ export function getAvatarUrl(user: DiscordUser): string {
   return `https://cdn.discordapp.com/embed/avatars/${defaultAvatarNum}.png`;
 }
 
-// Client-side session management
+// Client-side session management with cookies
 export function saveSession(session: Session): void {
   if (typeof window !== 'undefined') {
-    localStorage.setItem('discord_session', JSON.stringify(session));
+    // Save to cookie with secure settings
+    const cookieValue = encodeURIComponent(JSON.stringify(session));
+    const maxAge = 7 * 24 * 60 * 60; // 7 days in seconds
+    
+    // Set cookie with security flags
+    document.cookie = `discord_session=${cookieValue}; max-age=${maxAge}; path=/; samesite=strict${window.location.protocol === 'https:' ? '; secure' : ''}`;
   }
 }
 
 export function getSession(): Session | null {
   if (typeof window === 'undefined') return null;
   
-  const stored = localStorage.getItem('discord_session');
-  if (!stored) return null;
-
-  const session: Session = JSON.parse(stored);
+  // Get session from cookie
+  const cookies = document.cookie.split(';');
+  const sessionCookie = cookies.find(cookie => cookie.trim().startsWith('discord_session='));
   
-  // Check if session is expired
-  if (Date.now() >= session.expiresAt) {
+  if (!sessionCookie) return null;
+
+  try {
+    const cookieValue = sessionCookie.split('=')[1];
+    const session: Session = JSON.parse(decodeURIComponent(cookieValue));
+    
+    // Check if session is expired
+    if (Date.now() >= session.expiresAt) {
+      clearSession();
+      return null;
+    }
+
+    return session;
+  } catch (error) {
+    console.error('Error parsing session cookie:', error);
     clearSession();
     return null;
   }
-
-  return session;
 }
 
 export function clearSession(): void {
   if (typeof window !== 'undefined') {
-    localStorage.removeItem('discord_session');
+    // Clear cookie by setting expired date
+    document.cookie = 'discord_session=; max-age=0; path=/; samesite=strict';
   }
 }

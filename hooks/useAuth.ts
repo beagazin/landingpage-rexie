@@ -16,21 +16,33 @@ export function useAuth() {
     setSession(currentSession);
     setIsLoading(false);
 
-    // Listen for storage changes (multi-tab sync)
+    // Listen for storage changes (multi-tab sync via cookies)
     const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'discord_session') {
+      // For cookies, we check on focus/visibility change
+      const newSession = getSession();
+      setSession(newSession);
+      
+      // If session was cleared, redirect to home
+      if (!newSession && window.location.pathname.startsWith('/dashboard')) {
+        router.push('/');
+      }
+    };
+
+    // Also listen for visibility changes to sync cookies
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
         const newSession = getSession();
         setSession(newSession);
-        
-        // If session was cleared, redirect to home
-        if (!newSession && window.location.pathname.startsWith('/dashboard')) {
-          router.push('/');
-        }
       }
     };
 
     window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, [router]);
 
   const logout = () => {

@@ -1,4 +1,5 @@
 import PageIllustration from "@/components/page-illustration";
+import Footer from "@/components/ui/footer";
 
 export default function AuthLayout({
   children,
@@ -6,10 +7,14 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <main className="relative flex grow flex-col">
+    <main className="relative flex flex-col">
       <PageIllustration multiple />
 
-      {children}
+      <div className="flex flex-grow items-center justify-center">
+        {children}
+      </div>
+      
+      <Footer />
     </main>
   );
 }
