@@ -1,0 +1,93 @@
+/* Custom Purple Theme - #9c6dfc */
+
+/* Override default indigo colors with purple */
+:root {
+  --color-purple-primary: #9c6dfc;
+  --color-purple-light: #b896fc;
+  --color-purple-dark: #7d4ad9;
+  --color-purple-glow: rgba(156, 109, 252, 0.3);
+}
+
+/* Buttons - Primary Purple */
+.btn-purple,
+.btn-sm.btn-purple {
+  background: linear-gradient(to top, #9c6dfc, #b896fc);
+  background-size: 100% 100%;
+  background-position: bottom;
+  color: white;
+  box-shadow: inset 0px 1px 0px 0px rgba(255, 255, 255, 0.16);
+  transition: all 0.3s ease;
+}
+
+.btn-purple:hover,
+.btn-sm.btn-purple:hover {
+  background-size: 100% 150%;
+  box-shadow: 0 0 20px rgba(156, 109, 252, 0.5);
+}
+
+/* Purple gradient text animations */
+.text-gradient-purple {
+  background: linear-gradient(
+    to right,
+    #e5e7eb,
+    #b896fc,
+    #ffffff,
+    #9c6dfc,
+    #e5e7eb
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient 6s linear infinite;
+}
+
+/* Links and accents */
+.text-purple-accent {
+  color: #9c6dfc;
+}
+
+.text-purple-accent:hover {
+  color: #b896fc;
+}
+
+/* Borders and glows */
+.border-purple {
+  border-color: rgba(156, 109, 252, 0.3);
+}
+
+.glow-purple {
+  box-shadow: 0 0 20px rgba(156, 109, 252, 0.3);
+}
+
+.glow-purple-hover:hover {
+  box-shadow: 0 0 30px rgba(156, 109, 252, 0.5);
+}
+
+/* Form inputs focus */
+.form-input:focus,
+.form-textarea:focus,
+.form-select:focus {
+  border-color: #9c6dfc !important;
+  box-shadow: 0 0 0 3px rgba(156, 109, 252, 0.1) !important;
+}
+
+/* Backgrounds with purple gradient */
+.bg-purple-gradient {
+  background: linear-gradient(to bottom right, #9c6dfc, #7d4ad9);
+}
+
+.bg-purple-subtle {
+  background: rgba(156, 109, 252, 0.1);
+}
+
+/* Dropdown and hover states */
+.hover-purple:hover {
+  background-color: rgba(156, 109, 252, 0.1);
+}
+
+/* Loading spinner purple */
+.spinner-purple {
+  border-color: #9c6dfc;
+  border-top-color: transparent;
+}

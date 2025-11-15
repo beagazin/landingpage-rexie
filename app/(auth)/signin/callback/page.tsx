@@ -33,9 +33,9 @@ export default function SignInCallback() {
   return (
     <div className="flex min-h-screen items-center justify-center">
       <div className="text-center">
-        <div className="mb-4 inline-block h-12 w-12 animate-spin rounded-full border-4 border-indigo-500 border-t-transparent"></div>
+        <div className="mb-4 inline-block h-12 w-12 animate-spin rounded-full border-4 border-[#9c6dfc] border-t-transparent"></div>
         <p className="text-lg text-gray-200">Finalizando autenticação...</p>
-        <p className="mt-2 text-sm text-indigo-200/65">
+        <p className="mt-2 text-sm text-gray-400">
           Você será redirecionado em instantes
         </p>
       </div>

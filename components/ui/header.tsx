@@ -76,7 +76,7 @@ export default function Header() {
                 <li>
                   <Link
                     href="/dashboard"
-                    className="btn-sm bg-linear-to-t from-indigo-600 to-indigo-500 bg-[length:100%_100%] bg-[bottom] py-[5px] text-white shadow-[inset_0px_1px_0px_0px_--theme(--color-white/.16)] hover:bg-[length:100%_150%]"
+                    className="btn-sm bg-linear-to-t from-[#9c6dfc] to-[#b896fc] bg-[length:100%_100%] bg-[bottom] py-[5px] text-white shadow-[inset_0px_1px_0px_0px_rgba(255,255,255,0.16)] hover:bg-[length:100%_150%] transition-all duration-300 hover:shadow-[0_0_20px_rgba(156,109,252,0.5)]"
                   >
                     Dashboard
                   </Link>
