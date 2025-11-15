@@ -1,36 +1,137 @@
 "use client";
 
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
 import Logo from "./logo";
+import { getSession, clearSession, getAvatarUrl, Session } from "@/lib/auth";
 
 export default function Header() {
+  const [session, setSession] = useState<Session | null>(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLLIElement>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    // Check for session on mount
+    const currentSession = getSession();
+    setSession(currentSession);
+
+    // Listen for storage changes (for multi-tab sync)
+    const handleStorageChange = () => {
+      setSession(getSession());
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
+  useEffect(() => {
+    // Close dropdown when clicking outside
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleLogout = () => {
+    clearSession();
+    setSession(null);
+    setIsDropdownOpen(false);
+    router.push('/');
+  };
+
   return (
-  <header className="z-30 mt-2 w-full md:mt-5">
-    <div className="mx-auto max-w-6xl px-4 sm:px-6">
-      <div className="relative flex h-14 items-center justify-between gap-3 rounded-2xl bg-[linear-gradient(to_bottom_right,#111127,#1b1537)] px-3">
-        {/* Site branding */}
-        <div className="flex flex-1 items-center">
+    <header className="z-30 mt-2 w-full md:mt-5">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+        <div className="relative flex h-14 items-center justify-between gap-3 rounded-2xl bg-gray-900/90 px-3 before:pointer-events-none before:absolute before:inset-0 before:rounded-[inherit] before:border before:border-transparent before:[background:linear-gradient(to_right,var(--color-gray-800),var(--color-gray-700),var(--color-gray-800))_border-box] before:[mask-composite:exclude_!important] before:[mask:linear-gradient(white_0_0)_padding-box,_linear-gradient(white_0_0)] after:absolute after:inset-0 after:-z-10 after:backdrop-blur-xs">
+          {/* Site branding */}
+          <div className="flex flex-1 items-center">
             <Logo />
           </div>
 
-          {/* Desktop sign in links */}
+          {/* Desktop sign in links / User menu */}
           <ul className="flex flex-1 items-center justify-end gap-3">
-            {/* <li>
-              <Link
-                href="/signin"
-                className="btn-sm relative bg-linear-to-b from-gray-800 to-gray-800/60 bg-[length:100%_100%] bg-[bottom] py-[5px] text-gray-300 before:pointer-events-none before:absolute before:inset-0 before:rounded-[inherit] before:border before:border-transparent before:[background:linear-gradient(to_right,var(--color-gray-800),var(--color-gray-700),var(--color-gray-800))_border-box] before:[mask-composite:exclude_!important] before:[mask:linear-gradient(white_0_0)_padding-box,_linear-gradient(white_0_0)] hover:bg-[length:100%_150%]"
-              >
-                Acesse
-              </Link>
-            </li> */}
-            <li>
-              <Link
-                href="/signin"
-                className="btn-sm bg-linear-to-t from-primary-600 to-primary-500 bg-[length:100%_100%] bg-[bottom] py-[5px] text-white shadow-[inset_0px_1px_0px_0px_--theme(--color-white/.16)] hover:bg-[length:100%_150%]"
-              >
-                Acesse
-              </Link>
-            </li>
+            {session ? (
+              <>
+                <li>
+                  <Link
+                    href="/dashboard"
+                    className="btn-sm bg-linear-to-t from-indigo-600 to-indigo-500 bg-[length:100%_100%] bg-[bottom] py-[5px] text-white shadow-[inset_0px_1px_0px_0px_--theme(--color-white/.16)] hover:bg-[length:100%_150%]"
+                  >
+                    Dashboard
+                  </Link>
+                </li>
+                <li className="relative" ref={dropdownRef}>
+                  <button
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    className="flex items-center gap-2 rounded-lg px-3 py-2 transition-colors hover:bg-gray-800/50"
+                  >
+                    <Image
+                      src={getAvatarUrl(session.user)}
+                      alt={session.user.username}
+                      width={32}
+                      height={32}
+                      className="rounded-full"
+                    />
+                    <span className="text-sm font-medium text-gray-200">
+                      {session.user.username}
+                    </span>
+                    <svg
+                      className={`h-4 w-4 text-gray-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`}
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+
+                  {/* Dropdown */}
+                  {isDropdownOpen && (
+                    <div className="absolute right-0 top-full mt-2 w-48 rounded-lg border border-gray-700/50 bg-gray-900/95 backdrop-blur-sm shadow-xl">
+                      <div className="p-2">
+                        <button
+                          onClick={handleLogout}
+                          className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-300 transition-colors hover:bg-gray-800/50 hover:text-white"
+                        >
+                          <svg
+                            className="h-4 w-4"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                            />
+                          </svg>
+                          Desconectar
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </li>
+              </>
+            ) : (
+              <>
+                <li>
+                  <Link
+                    href="/signin"
+                    className="btn-sm relative bg-linear-to-b from-gray-800 to-gray-800/60 bg-[length:100%_100%] bg-[bottom] py-[5px] text-gray-300 before:pointer-events-none before:absolute before:inset-0 before:rounded-[inherit] before:border before:border-transparent before:[background:linear-gradient(to_right,var(--color-gray-800),var(--color-gray-700),var(--color-gray-800))_border-box] before:[mask-composite:exclude_!important] before:[mask:linear-gradient(white_0_0)_padding-box,_linear-gradient(white_0_0)] hover:bg-[length:100%_150%]"
+                  >
+                    Acesse
+                  </Link>
+                </li>
+              </>
+            )}
           </ul>
         </div>
       </div>
